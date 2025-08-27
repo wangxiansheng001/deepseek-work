@@ -15,8 +15,23 @@ const VITE_DEEPSEEK_API_BASE_URL = "https://api.deepseek.com/v1"
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
 		const url = new URL(request.url);
+		// 处理 CORS 预检请求
+		if (request.method === 'OPTIONS') {
+			return new Response(null, {
+				status: 200,
+				headers: {
+					'Access-Control-Allow-Origin': '*',
+					'Access-Control-Allow-Methods': 'POST, OPTIONS',
+					'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+				},
+			});
+		}
 		if (request.method !== 'POST') {
-			return new Response('Method Not Allowed', { status: 405 })
+			return new Response('Method Not Allowed', {
+				status: 405, headers: {
+					'Access-Control-Allow-Origin': '*',
+				}
+			})
 		}
 
 		if (url.pathname === '/api') {
@@ -32,7 +47,6 @@ export default {
 					'Access-Control-Allow-Origin': '*',
 					'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
 					'Access-Control-Allow-Headers': 'Content-Type',
-					'Access-Control-Max-Age': '86400'
 				},
 				body: JSON.stringify(requestBody)
 			});
@@ -42,11 +56,21 @@ export default {
 				return response;
 			} catch (error) {
 				console.error('Error calling DeepSeek API:', error);
-				return new Response('Internal Server Error', { status: 500 });
+				return new Response('Internal Server Error', {
+					status: 500, headers: {
+						'Content-Type': 'application/json',
+						'Access-Control-Allow-Origin': '*',
+					}
+				});
 			}
 		}
 
-		return new Response('Internal Server Error', { status: 500 });
+		return new Response('Internal Server Error', {
+			status: 500, headers: {
+				'Content-Type': 'application/json',
+				'Access-Control-Allow-Origin': '*',
+			}
+		});
 
 	},
 } satisfies ExportedHandler<Env>;
