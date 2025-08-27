@@ -28,7 +28,11 @@ export default {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					'Authorization': `Bearer ${env.VITE_DEEPSEEK_API_KEY}` // 使用 Secret 中的 API Key
+					'Authorization': `Bearer ${env.VITE_DEEPSEEK_API_KEY}`, // 使用 Secret 中的 API Key
+					'Access-Control-Allow-Origin': '*',
+					'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+					'Access-Control-Allow-Headers': 'Content-Type',
+					'Access-Control-Max-Age': '86400'
 				},
 				body: JSON.stringify(requestBody)
 			});
